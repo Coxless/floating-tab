@@ -1,14 +1,135 @@
-import React from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import type { TabInfo, Message, GetTabsResponse, SwitchTabPayload } from '../types';
+import { useTabSearch } from './hooks/useTabSearch';
+import { useKeyboardNav } from './hooks/useKeyboardNav';
+import SearchInput from './components/SearchInput';
+import TabList from './components/TabList';
+import EmptyState from './components/EmptyState';
+import Footer from './components/Footer';
 
-const App: React.FC = () => {
+interface AppProps {
+  onClose: () => void;
+  shadowRoot?: ShadowRoot | null;
+}
+
+const App: React.FC<AppProps> = ({ onClose }) => {
+  const [tabs, setTabs] = useState<TabInfo[]>([]);
+  const [currentTabId, setCurrentTabId] = useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const filteredTabs = useTabSearch(tabs, searchQuery);
+
+  // Fetch tabs on mount
+  useEffect(() => {
+    const fetchTabs = async () => {
+      try {
+        const response = await chrome.runtime.sendMessage<Message, GetTabsResponse>({
+          type: 'GET_TABS',
+        });
+        if (response) {
+          setTabs(response.tabs);
+          setCurrentTabId(response.currentTabId);
+        }
+      } catch (error) {
+        console.error('Failed to fetch tabs:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTabs();
+  }, []);
+
+  // Focus input on mount
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
+  // Reset selection when search query changes
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [searchQuery]);
+
+  const handleTabSelect = useCallback(
+    async (tabId: number) => {
+      try {
+        await chrome.runtime.sendMessage<Message>({
+          type: 'SWITCH_TAB',
+          payload: { tabId } as SwitchTabPayload,
+        });
+        onClose();
+      } catch (error) {
+        console.error('Failed to switch tab:', error);
+      }
+    },
+    [onClose]
+  );
+
+  const handleEnter = useCallback(() => {
+    const selectedTab = filteredTabs[selectedIndex];
+    if (selectedTab) {
+      handleTabSelect(selectedTab.id);
+    }
+  }, [filteredTabs, selectedIndex, handleTabSelect]);
+
+  useKeyboardNav({
+    itemCount: filteredTabs.length,
+    selectedIndex,
+    onSelectedIndexChange: setSelectedIndex,
+    onEnter: handleEnter,
+    onEscape: onClose,
+    enabled: true,
+  });
+
+  const handleOverlayClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
+
   return (
-    <div className="w-96 max-h-[600px] bg-white dark:bg-gray-900 rounded-lg shadow-xl p-4">
-      <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-        FloatingTab
-      </h1>
-      <p className="text-gray-600 dark:text-gray-400">
-        セットアップ完了 - Phase 2で機能実装予定
-      </p>
+    <div
+      className="fixed inset-0 flex items-center justify-center"
+      onClick={handleOverlayClick}
+      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}
+    >
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/70" />
+
+      {/* Modal */}
+      <div
+        className="relative bg-white rounded-xl shadow-2xl w-[600px] max-h-[500px] flex flex-col overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+        style={{ minWidth: '500px' }}
+      >
+        <SearchInput ref={inputRef} value={searchQuery} onChange={setSearchQuery} />
+
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="text-[14px] text-[#666]">読み込み中...</div>
+          </div>
+        ) : filteredTabs.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <TabList
+            tabs={filteredTabs}
+            selectedIndex={selectedIndex}
+            currentTabId={currentTabId}
+            onTabSelect={handleTabSelect}
+            onSelectedIndexChange={setSelectedIndex}
+          />
+        )}
+
+        <Footer />
+      </div>
     </div>
   );
 };
