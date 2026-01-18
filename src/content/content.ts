@@ -23,15 +23,6 @@ function createContainer(): HTMLElement {
 
   shadowRoot = container.attachShadow({ mode: 'open' });
 
-  // キャプチャフェーズでキーイベントを止めてホストページへの伝播を防ぐ
-  container.addEventListener(
-    'keydown',
-    (e) => {
-      e.stopPropagation();
-    },
-    true
-  );
-
   return container;
 }
 
