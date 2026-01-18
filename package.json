@@ -8,13 +8,14 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "packageManager": "pnpm@10.21.0",
+  "packageManager": "pnpm@10.28.0",
   "dependencies": {
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.3.0",
+    "@tailwindcss/vite": "^4.1.18",
     "@types/chrome": "^0.1.33",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
