@@ -8,8 +8,16 @@ export interface TabInfo {
 }
 
 export interface Message {
-  type: 'TOGGLE_POPUP' | 'GET_TABS' | 'SWITCH_TAB' | 'CLOSE_POPUP';
+  type: 'TOGGLE_POPUP' | 'GET_TABS' | 'SWITCH_TAB' | 'CLOSE_POPUP' | 'WEB_SEARCH' | 'OPEN_URL';
   payload?: unknown;
+}
+
+export interface WebSearchPayload {
+  query: string;
+}
+
+export interface OpenUrlPayload {
+  url: string;
 }
 
 export interface GetTabsResponse {

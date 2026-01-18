@@ -34,6 +34,13 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           placeholder="タブを検索... (タイトルまたはURL)"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => {                                                                
+            //ナビゲーションキーはuseKeyboardNavに伝播させる                                
+            const navKeys = ['Enter', 'Escape', 'ArrowUp', 'ArrowDown'];                     
+            if (!navKeys.includes(e.key)) {                                                  
+              e.stopPropagation();                                                           
+            }                                                                                
+          }}   
           className="flex-1 outline-none text-[16px] text-text-primary placeholder:text-text-secondary bg-transparent"
         />
 

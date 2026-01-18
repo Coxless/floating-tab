@@ -1,6 +1,24 @@
 import React from 'react';
+import { detectInputType } from '../utils/inputDetection';
 
-const EmptyState: React.FC = () => {
+interface EmptyStateProps {
+  searchQuery: string;
+}
+
+const EmptyState: React.FC<EmptyStateProps> = ({ searchQuery }) => {
+  const query = searchQuery.trim();
+  const inputType = query ? detectInputType(query) : null;
+
+  const getHintText = () => {
+    if (!query) {
+      return '別のキーワードで検索してみてください';
+    }
+    if (inputType === 'url') {
+      return 'Enter を押して URL を開く';
+    }
+    return `Enter を押して「${query}」を検索`;
+  };
+
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4">
       <div className="w-16 h-16 rounded-full bg-bg-secondary flex items-center justify-center mb-4">
@@ -14,7 +32,7 @@ const EmptyState: React.FC = () => {
         </svg>
       </div>
       <p className="text-[16px] text-text-primary mb-2">タブが見つかりません</p>
-      <p className="text-[12px] text-text-muted">別のキーワードで検索してみてください</p>
+      <p className="text-[12px] text-text-muted">{getHintText()}</p>
     </div>
   );
 };
