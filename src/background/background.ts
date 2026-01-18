@@ -1,11 +1,5 @@
 import type { Message, TabInfo, GetTabsResponse, SwitchTabPayload, WebSearchPayload, OpenUrlPayload } from '../types';
 
-console.log('FloatingTab background service worker loaded');
-
-chrome.runtime.onInstalled.addListener(() => {
-  console.log('FloatingTab installed');
-});
-
 // Content Script が注入できないURL
 function isRestrictedUrl(url: string | undefined): boolean {
   if (!url) return true;
@@ -21,13 +15,9 @@ function isRestrictedUrl(url: string | undefined): boolean {
 // Alt+Space ショートカットキーの検知
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle-popup') {
-    try {
-      const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (activeTab?.id && !isRestrictedUrl(activeTab.url)) {
-        await chrome.tabs.sendMessage(activeTab.id, { type: 'TOGGLE_POPUP' } as Message);
-      }
-    } catch {
-      // Content Script がロードされていない場合は無視
+    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (activeTab?.id && !isRestrictedUrl(activeTab.url)) {
+      await chrome.tabs.sendMessage(activeTab.id, { type: 'TOGGLE_POPUP' } as Message);
     }
   }
 });
