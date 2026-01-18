@@ -4,7 +4,10 @@
   "description": "全画面モードでタブ切り替えと検索を快適にするChrome拡張機能",
   "type": "module",
   "scripts": {
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "lint": "biome lint",
+    "format": "biome format",
+    "check": "biome check --write"
   },
   "packageManager": "pnpm@10.28.0",
   "dependencies": {
@@ -12,6 +15,7 @@
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.3.11",
     "@crxjs/vite-plugin": "^2.3.0",
     "@tailwindcss/vite": "^4.1.18",
     "@types/chrome": "^0.1.33",

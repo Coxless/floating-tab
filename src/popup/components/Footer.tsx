@@ -1,6 +1,6 @@
-import React from 'react';
-import { FOOTER_HEIGHT } from '../constants';
-import { detectInputType, type InputType } from '../utils/inputDetection';
+import type React from "react";
+import { FOOTER_HEIGHT } from "../constants";
+import { detectInputType, type InputType } from "../utils/inputDetection";
 
 interface FooterProps {
   hasItems: boolean;
@@ -10,14 +10,14 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ hasItems, searchQuery }) => {
   const getEnterLabel = (): string => {
     if (hasItems) {
-      return '切替';
+      return "切替";
     }
     const query = searchQuery.trim();
     if (!query) {
-      return '切替';
+      return "切替";
     }
     const inputType: InputType = detectInputType(query);
-    return inputType === 'url' ? 'URL を開く' : 'Web 検索';
+    return inputType === "url" ? "URL を開く" : "Web 検索";
   };
 
   return (
@@ -27,15 +27,21 @@ const Footer: React.FC<FooterProps> = ({ hasItems, searchQuery }) => {
     >
       <div className="text-[11px] text-text-subtle flex items-center gap-4">
         <span className="flex items-center gap-1.5">
-          <kbd className="px-1.5 py-0.5 bg-bg-secondary rounded text-[10px]">↑↓</kbd>
+          <kbd className="px-1.5 py-0.5 bg-bg-secondary rounded text-[10px]">
+            ↑↓
+          </kbd>
           選択
         </span>
         <span className="flex items-center gap-1.5">
-          <kbd className="px-1.5 py-0.5 bg-bg-secondary rounded text-[10px]">Enter</kbd>
+          <kbd className="px-1.5 py-0.5 bg-bg-secondary rounded text-[10px]">
+            Enter
+          </kbd>
           {getEnterLabel()}
         </span>
         <span className="flex items-center gap-1.5">
-          <kbd className="px-1.5 py-0.5 bg-bg-secondary rounded text-[10px]">Esc</kbd>
+          <kbd className="px-1.5 py-0.5 bg-bg-secondary rounded text-[10px]">
+            Esc
+          </kbd>
           閉じる
         </span>
       </div>

@@ -8,7 +8,13 @@ export interface TabInfo {
 }
 
 export interface Message {
-  type: 'TOGGLE_POPUP' | 'GET_TABS' | 'SWITCH_TAB' | 'CLOSE_POPUP' | 'WEB_SEARCH' | 'OPEN_URL';
+  type:
+    | "TOGGLE_POPUP"
+    | "GET_TABS"
+    | "SWITCH_TAB"
+    | "CLOSE_POPUP"
+    | "WEB_SEARCH"
+    | "OPEN_URL";
   payload?: unknown;
 }
 

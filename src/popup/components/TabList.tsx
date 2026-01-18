@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from 'react';
-import type { TabInfo } from '../../types';
-import TabItem from './TabItem';
-import { TAB_LIST_MAX_HEIGHT } from '../constants';
+import type React from "react";
+import { useEffect, useRef } from "react";
+import type { TabInfo } from "../../types";
+import { TAB_LIST_MAX_HEIGHT } from "../constants";
+import TabItem from "./TabItem";
 
 interface TabListProps {
   tabs: TabInfo[];
@@ -23,15 +24,24 @@ const TabList: React.FC<TabListProps> = ({
   // Auto-scroll to selected item
   useEffect(() => {
     if (listRef.current) {
-      const selectedElement = listRef.current.children[selectedIndex] as HTMLElement;
+      const selectedElement = listRef.current.children[
+        selectedIndex
+      ] as HTMLElement;
       if (selectedElement) {
-        selectedElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        selectedElement.scrollIntoView({
+          block: "nearest",
+          behavior: "smooth",
+        });
       }
     }
   }, [selectedIndex]);
 
   return (
-    <div ref={listRef} className="flex-1 overflow-y-auto" style={{ maxHeight: TAB_LIST_MAX_HEIGHT }}>
+    <div
+      ref={listRef}
+      className="flex-1 overflow-y-auto"
+      style={{ maxHeight: TAB_LIST_MAX_HEIGHT }}
+    >
       {tabs.map((tab, index) => (
         <TabItem
           key={tab.id}

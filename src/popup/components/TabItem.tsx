@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import type { TabInfo } from '../../types';
-import { TAB_ITEM_HEIGHT } from '../constants';
+import type React from "react";
+import { useState } from "react";
+import type { TabInfo } from "../../types";
+import { TAB_ITEM_HEIGHT } from "../constants";
 
 interface TabItemProps {
   tab: TabInfo;
@@ -11,7 +12,13 @@ interface TabItemProps {
 }
 
 const FallbackIcon: React.FC = () => (
-  <svg className="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg
+    className="w-4 h-4 text-text-muted"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -31,13 +38,14 @@ const TabItem: React.FC<TabItemProps> = ({
   const [faviconError, setFaviconError] = useState(false);
 
   return (
-    <div
+    <button
+      type="button"
       className={`
-        flex items-center gap-3 px-4 cursor-pointer transition-all duration-150
+        w-full text-left flex items-center gap-3 px-4 cursor-pointer transition-all duration-150
         ${
           isSelected
-            ? 'bg-primary-light border-l-[3px] border-l-primary'
-            : 'bg-bg-primary border-l-[3px] border-l-transparent hover:bg-bg-secondary'
+            ? "bg-primary-light border-l-[3px] border-l-primary"
+            : "bg-bg-primary border-l-[3px] border-l-transparent hover:bg-bg-secondary"
         }
       `}
       style={{ height: TAB_ITEM_HEIGHT }}
@@ -60,7 +68,9 @@ const TabItem: React.FC<TabItemProps> = ({
 
       {/* Title and URL */}
       <div className="flex-1 min-w-0">
-        <div className="text-[15px] font-medium text-text-primary truncate">{tab.title}</div>
+        <div className="text-[15px] font-medium text-text-primary truncate">
+          {tab.title}
+        </div>
         <div className="text-[12px] text-text-muted truncate">{tab.url}</div>
       </div>
 
@@ -70,7 +80,7 @@ const TabItem: React.FC<TabItemProps> = ({
           現在
         </div>
       )}
-    </div>
+    </button>
   );
 };
 

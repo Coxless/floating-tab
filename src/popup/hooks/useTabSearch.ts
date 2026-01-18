@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import type { TabInfo } from '../../types';
+import { useMemo } from "react";
+import type { TabInfo } from "../../types";
 
 export function useTabSearch(tabs: TabInfo[], searchQuery: string): TabInfo[] {
   return useMemo(() => {
@@ -10,7 +10,8 @@ export function useTabSearch(tabs: TabInfo[], searchQuery: string): TabInfo[] {
     const query = searchQuery.toLowerCase();
     return tabs.filter(
       (tab) =>
-        tab.title.toLowerCase().includes(query) || tab.url.toLowerCase().includes(query)
+        tab.title.toLowerCase().includes(query) ||
+        tab.url.toLowerCase().includes(query),
     );
   }, [tabs, searchQuery]);
 }

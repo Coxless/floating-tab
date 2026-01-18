@@ -3,15 +3,8 @@
   "name": "FloatingTab",
   "version": "1.0.0",
   "description": "全画面モードでタブ切り替えと検索を快適にする拡張機能",
-  "permissions": [
-    "tabs",
-    "storage",
-    "activeTab",
-    "search"
-  ],
-  "host_permissions": [
-    "<all_urls>"
-  ],
+  "permissions": ["tabs", "storage", "activeTab", "search"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "src/background/background.ts",
     "type": "module"

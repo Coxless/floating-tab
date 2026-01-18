@@ -1,11 +1,11 @@
-import { createElement } from 'react';
-import { createRoot, type Root } from 'react-dom/client';
-import type { Message } from '../types';
-import { Z_INDEX_MAX } from '../popup/constants';
-import App from '../popup/App';
-import cssContent from '../popup/index.css?inline';
+import { createElement } from "react";
+import { createRoot, type Root } from "react-dom/client";
+import App from "../popup/App";
+import { Z_INDEX_MAX } from "../popup/constants";
+import cssContent from "../popup/index.css?inline";
+import type { Message } from "../types";
 
-const CONTAINER_ID = 'floating-tab-root';
+const CONTAINER_ID = "floating-tab-root";
 let isPopupOpen = false;
 let shadowRoot: ShadowRoot | null = null;
 let root: Root | null = null;
@@ -16,12 +16,12 @@ function createContainer(): HTMLElement {
     existingContainer.remove();
   }
 
-  const container = document.createElement('div');
+  const container = document.createElement("div");
   container.id = CONTAINER_ID;
   container.style.cssText = `all: initial; position: fixed; z-index: ${Z_INDEX_MAX};`;
   document.body.appendChild(container);
 
-  shadowRoot = container.attachShadow({ mode: 'open' });
+  shadowRoot = container.attachShadow({ mode: "open" });
 
   return container;
 }
@@ -33,13 +33,13 @@ function mountPopup(): void {
   if (!shadowRoot) return;
 
   // Inject styles into shadow DOM
-  const styleElement = document.createElement('style');
+  const styleElement = document.createElement("style");
   styleElement.textContent = cssContent;
   shadowRoot.appendChild(styleElement);
 
   // Create mount point inside shadow DOM
-  const mountPoint = document.createElement('div');
-  mountPoint.id = 'popup-mount';
+  const mountPoint = document.createElement("div");
+  mountPoint.id = "popup-mount";
   shadowRoot.appendChild(mountPoint);
 
   // Mount React app
@@ -78,7 +78,7 @@ function togglePopup(): void {
 
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener((message: Message) => {
-  if (message.type === 'TOGGLE_POPUP') {
+  if (message.type === "TOGGLE_POPUP") {
     togglePopup();
   }
 });
