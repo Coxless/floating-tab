@@ -9,12 +9,7 @@
 pnpm install
 ```
 
-2. 開発モード起動
-```bash
-pnpm run dev
-```
-
-3. Chromeで拡張機能を読み込む
+2. Chromeで拡張機能を読み込む
    - `chrome://extensions/` を開く
    - 「デベロッパーモード」を有効化
    - 「パッケージ化されていない拡張機能を読み込む」

@@ -24,7 +24,13 @@ src/
 ├── manifest.json      # Chrome拡張マニフェスト (Manifest V3)
 ├── background/        # Service Worker
 ├── content/           # Content Script (各ページに注入)
-├── popup/             # React UI コンポーネント
+├── popup/
+│   ├── App.tsx        # メインコンポーネント
+│   ├── index.tsx      # エントリーポイント
+│   ├── index.css      # Tailwind + デザイントークン
+│   ├── constants.ts   # UI定数 (サイズ、z-index等)
+│   ├── components/    # UIコンポーネント
+│   └── hooks/         # カスタムフック
 └── types/             # 共通型定義
 public/
 └── icons/             # 拡張機能アイコン
@@ -42,3 +48,38 @@ dist/                  # ビルド出力 (chrome://extensions で読み込む)
 - Manifest V3ではService Workerは非永続的（必要時のみ起動）
 - Content ScriptとBackground間はchrome.runtime.sendMessageで通信
 - `<all_urls>`権限で全ページにContent Script注入
+- Content ScriptはShadow DOMを使用してホストページのスタイルと分離
+
+## Message Types
+
+Background / Content Script間の通信で使用するメッセージタイプ:
+
+| Type | Direction | Description |
+|------|-----------|-------------|
+| `TOGGLE_POPUP` | Background → Content | ポップアップの表示/非表示切替 |
+| `GET_TABS` | Content → Background | 全タブ情報の取得 |
+| `SWITCH_TAB` | Content → Background | 指定タブへの切替 |
+
+## Design Tokens
+
+`src/popup/index.css` の `@theme` ブロックでカラーを定義:
+
+```css
+@theme {
+  --color-primary: #2196f3;
+  --color-primary-light: #e3f2fd;
+  --color-text-primary: #222;
+  --color-bg-secondary: #f5f5f5;
+  /* ... */
+}
+```
+
+Tailwindクラスで使用: `bg-primary`, `text-text-muted`, `border-border` 等
+
+## Coding Conventions
+
+- **マジックナンバー**: `constants.ts` に定義して使用
+- **カラー**: Tailwindのデザイントークン (`@theme`) を使用、arbitrary values (`bg-[#xxx]`) は避ける
+- **コンポーネント**: 関数コンポーネント + TypeScript interface for props
+- **フック**: ロジックはカスタムフックに抽出 (`hooks/` ディレクトリ)
+- **エラーハンドリング**: 非同期処理は try-catch で囲む

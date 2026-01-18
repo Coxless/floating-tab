@@ -11,3 +11,12 @@ export interface Message {
   type: 'TOGGLE_POPUP' | 'GET_TABS' | 'SWITCH_TAB' | 'CLOSE_POPUP';
   payload?: unknown;
 }
+
+export interface GetTabsResponse {
+  tabs: TabInfo[];
+  currentTabId: number;
+}
+
+export interface SwitchTabPayload {
+  tabId: number;
+}
