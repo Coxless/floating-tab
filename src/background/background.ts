@@ -6,16 +6,28 @@ chrome.runtime.onInstalled.addListener(() => {
   console.log('FloatingTab installed');
 });
 
+// Content Script が注入できないURL
+function isRestrictedUrl(url: string | undefined): boolean {
+  if (!url) return true;
+  return (
+    url.startsWith('chrome://') ||
+    url.startsWith('chrome-extension://') ||
+    url.startsWith('about:') ||
+    url.startsWith('edge://') ||
+    url.startsWith('devtools://')
+  );
+}
+
 // Alt+Space ショートカットキーの検知
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle-popup') {
     try {
       const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (activeTab?.id) {
+      if (activeTab?.id && !isRestrictedUrl(activeTab.url)) {
         await chrome.tabs.sendMessage(activeTab.id, { type: 'TOGGLE_POPUP' } as Message);
       }
-    } catch (error) {
-      console.error('Failed to send TOGGLE_POPUP message:', error);
+    } catch {
+      // Content Script がロードされていない場合は無視
     }
   }
 });
