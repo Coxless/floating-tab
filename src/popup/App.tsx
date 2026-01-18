@@ -148,6 +148,7 @@ const App: React.FC<AppProps> = ({ onClose }) => {
       <div className="absolute inset-0 bg-overlay" />
 
       {/* Modal */}
+      {/** biome-ignore lint/a11y/useKeyWithClickEvents: 仕様 */}
       <div
         className="relative bg-bg-primary rounded-xl shadow-2xl flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
