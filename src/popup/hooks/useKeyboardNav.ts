@@ -5,6 +5,7 @@ interface UseKeyboardNavOptions {
   selectedIndex: number;
   onSelectedIndexChange: (index: number) => void;
   onEnter: () => void;
+  onEnterEmpty?: () => void;
   onEscape: () => void;
   enabled?: boolean;
 }
@@ -14,6 +15,7 @@ export function useKeyboardNav({
   selectedIndex,
   onSelectedIndexChange,
   onEnter,
+  onEnterEmpty,
   onEscape,
   enabled = true,
 }: UseKeyboardNavOptions): void {
@@ -36,11 +38,13 @@ export function useKeyboardNav({
           e.preventDefault();
           if (itemCount > 0) {
             onEnter();
+          } else if (onEnterEmpty) {
+            onEnterEmpty();
           }
           break;
       }
     },
-    [itemCount, selectedIndex, onSelectedIndexChange, onEnter, onEscape]
+    [itemCount, selectedIndex, onSelectedIndexChange, onEnter, onEnterEmpty, onEscape]
   );
 
   useEffect(() => {

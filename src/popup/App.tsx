@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import type { TabInfo, Message, GetTabsResponse, SwitchTabPayload } from '../types';
+import type { TabInfo, Message, GetTabsResponse, SwitchTabPayload, WebSearchPayload, OpenUrlPayload } from '../types';
 import { useTabSearch } from './hooks/useTabSearch';
 import { useKeyboardNav } from './hooks/useKeyboardNav';
+import { detectInputType, normalizeUrl } from './utils/inputDetection';
 import SearchInput from './components/SearchInput';
 import TabList from './components/TabList';
 import EmptyState from './components/EmptyState';
@@ -77,11 +78,35 @@ const App: React.FC<AppProps> = ({ onClose }) => {
     }
   }, [filteredTabs, selectedIndex, handleTabSelect]);
 
+  const handleEnterEmpty = useCallback(async () => {
+    const query = searchQuery.trim();
+    if (!query) return;
+
+    try {
+      const inputType = detectInputType(query);
+      if (inputType === 'url') {
+        await chrome.runtime.sendMessage<Message>({
+          type: 'OPEN_URL',
+          payload: { url: normalizeUrl(query) } as OpenUrlPayload,
+        });
+      } else {
+        await chrome.runtime.sendMessage<Message>({
+          type: 'WEB_SEARCH',
+          payload: { query } as WebSearchPayload,
+        });
+      }
+      onClose();
+    } catch (error) {
+      console.error('Failed to perform action:', error);
+    }
+  }, [searchQuery, onClose]);
+
   useKeyboardNav({
     itemCount: filteredTabs.length,
     selectedIndex,
     onSelectedIndexChange: setSelectedIndex,
     onEnter: handleEnter,
+    onEnterEmpty: handleEnterEmpty,
     onEscape: onClose,
     enabled: true,
   });
@@ -117,7 +142,7 @@ const App: React.FC<AppProps> = ({ onClose }) => {
             <div className="text-[14px] text-text-secondary">読み込み中...</div>
           </div>
         ) : filteredTabs.length === 0 ? (
-          <EmptyState />
+          <EmptyState searchQuery={searchQuery} />
         ) : (
           <TabList
             tabs={filteredTabs}
@@ -128,7 +153,7 @@ const App: React.FC<AppProps> = ({ onClose }) => {
           />
         )}
 
-        <Footer />
+        <Footer hasItems={filteredTabs.length > 0} searchQuery={searchQuery} />
       </div>
     </div>
   );

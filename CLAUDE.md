@@ -13,8 +13,7 @@
 
 ```bash
 pnpm install    # 依存関係インストール
-pnpm run dev    # 開発サーバー起動（HMR対応）
-pnpm run build  # プロダクションビルド
+pnpm build  # プロダクションビルド
 ```
 
 ## Project Structure

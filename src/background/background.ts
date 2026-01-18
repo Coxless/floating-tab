@@ -1,4 +1,4 @@
-import type { Message, TabInfo, GetTabsResponse, SwitchTabPayload } from '../types';
+import type { Message, TabInfo, GetTabsResponse, SwitchTabPayload, WebSearchPayload, OpenUrlPayload } from '../types';
 
 console.log('FloatingTab background service worker loaded');
 
@@ -12,7 +12,7 @@ chrome.commands.onCommand.addListener(async (command) => {
     try {
       const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (activeTab?.id) {
-        chrome.tabs.sendMessage(activeTab.id, { type: 'TOGGLE_POPUP' } as Message);
+        await chrome.tabs.sendMessage(activeTab.id, { type: 'TOGGLE_POPUP' } as Message);
       }
     } catch (error) {
       console.error('Failed to send TOGGLE_POPUP message:', error);
@@ -29,6 +29,14 @@ chrome.runtime.onMessage.addListener((message: Message, _sender, sendResponse) =
 
     case 'SWITCH_TAB':
       handleSwitchTab(message.payload as SwitchTabPayload).then(sendResponse);
+      return true;
+
+    case 'WEB_SEARCH':
+      handleWebSearch(message.payload as WebSearchPayload).then(sendResponse);
+      return true;
+
+    case 'OPEN_URL':
+      handleOpenUrl(message.payload as OpenUrlPayload).then(sendResponse);
       return true;
 
     default:
@@ -68,6 +76,32 @@ async function handleSwitchTab(payload: SwitchTabPayload): Promise<{ success: bo
     return { success: true };
   } catch (error) {
     console.error('Failed to switch tab:', error);
+    return { success: false };
+  }
+}
+
+async function handleWebSearch(payload: WebSearchPayload): Promise<{ success: boolean }> {
+  try {
+    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (activeTab?.id) {
+      await chrome.search.query({ text: payload.query, tabId: activeTab.id });
+    }
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to perform web search:', error);
+    return { success: false };
+  }
+}
+
+async function handleOpenUrl(payload: OpenUrlPayload): Promise<{ success: boolean }> {
+  try {
+    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (activeTab?.id) {
+      await chrome.tabs.update(activeTab.id, { url: payload.url });
+    }
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to open URL:', error);
     return { success: false };
   }
 }
