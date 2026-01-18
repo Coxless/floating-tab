@@ -1,19 +1,23 @@
 import React from 'react';
+import { FOOTER_HEIGHT } from '../constants';
 
 const Footer: React.FC = () => {
   return (
-    <div className="h-[40px] border-t border-[#e0e0e0] flex items-center justify-center px-4">
-      <div className="text-[11px] text-[#888] flex items-center gap-4">
+    <div
+      className="border-t border-border flex items-center justify-center px-4"
+      style={{ height: FOOTER_HEIGHT }}
+    >
+      <div className="text-[11px] text-text-subtle flex items-center gap-4">
         <span className="flex items-center gap-1.5">
-          <kbd className="px-1.5 py-0.5 bg-[#f5f5f5] rounded text-[10px]">↑↓</kbd>
+          <kbd className="px-1.5 py-0.5 bg-bg-secondary rounded text-[10px]">↑↓</kbd>
           選択
         </span>
         <span className="flex items-center gap-1.5">
-          <kbd className="px-1.5 py-0.5 bg-[#f5f5f5] rounded text-[10px]">Enter</kbd>
+          <kbd className="px-1.5 py-0.5 bg-bg-secondary rounded text-[10px]">Enter</kbd>
           切替
         </span>
         <span className="flex items-center gap-1.5">
-          <kbd className="px-1.5 py-0.5 bg-[#f5f5f5] rounded text-[10px]">Esc</kbd>
+          <kbd className="px-1.5 py-0.5 bg-bg-secondary rounded text-[10px]">Esc</kbd>
           閉じる
         </span>
       </div>

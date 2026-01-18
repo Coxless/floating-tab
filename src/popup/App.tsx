@@ -6,10 +6,10 @@ import SearchInput from './components/SearchInput';
 import TabList from './components/TabList';
 import EmptyState from './components/EmptyState';
 import Footer from './components/Footer';
+import { MODAL_WIDTH, MODAL_MIN_WIDTH, MODAL_MAX_HEIGHT } from './constants';
 
 interface AppProps {
   onClose: () => void;
-  shadowRoot?: ShadowRoot | null;
 }
 
 const App: React.FC<AppProps> = ({ onClose }) => {
@@ -102,19 +102,19 @@ const App: React.FC<AppProps> = ({ onClose }) => {
       style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}
     >
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/70" />
+      <div className="absolute inset-0 bg-overlay" />
 
       {/* Modal */}
       <div
-        className="relative bg-white rounded-xl shadow-2xl w-[600px] max-h-[500px] flex flex-col overflow-hidden"
+        className="relative bg-bg-primary rounded-xl shadow-2xl flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
-        style={{ minWidth: '500px' }}
+        style={{ width: MODAL_WIDTH, minWidth: MODAL_MIN_WIDTH, maxHeight: MODAL_MAX_HEIGHT }}
       >
         <SearchInput ref={inputRef} value={searchQuery} onChange={setSearchQuery} />
 
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="text-[14px] text-[#666]">読み込み中...</div>
+            <div className="text-[14px] text-text-secondary">読み込み中...</div>
           </div>
         ) : filteredTabs.length === 0 ? (
           <EmptyState />

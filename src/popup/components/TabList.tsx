@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import type { TabInfo } from '../../types';
 import TabItem from './TabItem';
+import { TAB_LIST_MAX_HEIGHT } from '../constants';
 
 interface TabListProps {
   tabs: TabInfo[];
@@ -30,7 +31,7 @@ const TabList: React.FC<TabListProps> = ({
   }, [selectedIndex]);
 
   return (
-    <div ref={listRef} className="flex-1 overflow-y-auto" style={{ maxHeight: '400px' }}>
+    <div ref={listRef} className="flex-1 overflow-y-auto" style={{ maxHeight: TAB_LIST_MAX_HEIGHT }}>
       {tabs.map((tab, index) => (
         <TabItem
           key={tab.id}

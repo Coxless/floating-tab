@@ -1,4 +1,5 @@
 import type { Message } from '../types';
+import { Z_INDEX_MAX } from '../popup/constants';
 
 console.log('FloatingTab content script loaded');
 
@@ -15,7 +16,7 @@ function createContainer(): HTMLElement {
 
   const container = document.createElement('div');
   container.id = CONTAINER_ID;
-  container.style.cssText = 'all: initial; position: fixed; z-index: 2147483647;';
+  container.style.cssText = `all: initial; position: fixed; z-index: ${Z_INDEX_MAX};`;
   document.body.appendChild(container);
 
   shadowRoot = container.attachShadow({ mode: 'open' });
@@ -34,33 +35,43 @@ async function mountPopup(): Promise<void> {
   mountPoint.id = 'popup-mount';
   shadowRoot.appendChild(mountPoint);
 
-  // Dynamically import and mount React app
-  const [{ createRoot }, { default: App }, cssModule] = await Promise.all([
-    import('react-dom/client'),
-    import('../popup/App'),
-    import('../popup/index.css?inline'),
-  ]);
+  try {
+    // Dynamically import and mount React app
+    const [{ createRoot }, { default: App }, cssModule] = await Promise.all([
+      import('react-dom/client'),
+      import('../popup/App'),
+      import('../popup/index.css?inline'),
+    ]);
 
-  // Inject styles into shadow DOM
-  const styleElement = document.createElement('style');
-  styleElement.textContent = cssModule.default;
-  shadowRoot.insertBefore(styleElement, mountPoint);
+    // Inject styles into shadow DOM
+    const styleElement = document.createElement('style');
+    styleElement.textContent = cssModule.default;
+    shadowRoot.insertBefore(styleElement, mountPoint);
 
-  // Mount React app
-  const root = createRoot(mountPoint);
-  const { createElement } = await import('react');
+    // Mount React app
+    const root = createRoot(mountPoint);
+    const { createElement } = await import('react');
 
-  const handleClose = () => {
-    unmountPopup();
-  };
+    const handleClose = () => {
+      unmountPopup();
+    };
 
-  root.render(createElement(App, { onClose: handleClose, shadowRoot }));
+    root.render(createElement(App, { onClose: handleClose }));
 
-  cleanup = () => {
-    root.unmount();
-  };
+    cleanup = () => {
+      root.unmount();
+    };
 
-  isPopupOpen = true;
+    isPopupOpen = true;
+  } catch (error) {
+    console.error('Failed to mount FloatingTab popup:', error);
+    // Clean up the container if mounting failed
+    const container = document.getElementById(CONTAINER_ID);
+    if (container) {
+      container.remove();
+    }
+    shadowRoot = null;
+  }
 }
 
 function unmountPopup(): void {
