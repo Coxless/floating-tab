@@ -151,7 +151,6 @@ const App: React.FC<AppProps> = ({ onClose }) => {
       <div
         className="relative bg-bg-primary rounded-xl shadow-2xl flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         style={{
