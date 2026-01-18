@@ -1,13 +1,21 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import type { TabInfo, Message, GetTabsResponse, SwitchTabPayload, WebSearchPayload, OpenUrlPayload } from '../types';
-import { useTabSearch } from './hooks/useTabSearch';
-import { useKeyboardNav } from './hooks/useKeyboardNav';
-import { detectInputType, normalizeUrl } from './utils/inputDetection';
-import SearchInput from './components/SearchInput';
-import TabList from './components/TabList';
-import EmptyState from './components/EmptyState';
-import Footer from './components/Footer';
-import { MODAL_WIDTH, MODAL_MIN_WIDTH, MODAL_MAX_HEIGHT } from './constants';
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type {
+  GetTabsResponse,
+  Message,
+  OpenUrlPayload,
+  SwitchTabPayload,
+  TabInfo,
+  WebSearchPayload,
+} from "../types";
+import EmptyState from "./components/EmptyState";
+import Footer from "./components/Footer";
+import SearchInput from "./components/SearchInput";
+import TabList from "./components/TabList";
+import { MODAL_MAX_HEIGHT, MODAL_MIN_WIDTH, MODAL_WIDTH } from "./constants";
+import { useKeyboardNav } from "./hooks/useKeyboardNav";
+import { useTabSearch } from "./hooks/useTabSearch";
+import { detectInputType, normalizeUrl } from "./utils/inputDetection";
 
 interface AppProps {
   onClose: () => void;
@@ -16,7 +24,7 @@ interface AppProps {
 const App: React.FC<AppProps> = ({ onClose }) => {
   const [tabs, setTabs] = useState<TabInfo[]>([]);
   const [currentTabId, setCurrentTabId] = useState<number>(0);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -27,15 +35,18 @@ const App: React.FC<AppProps> = ({ onClose }) => {
   useEffect(() => {
     const fetchTabs = async () => {
       try {
-        const response = await chrome.runtime.sendMessage<Message, GetTabsResponse>({
-          type: 'GET_TABS',
+        const response = await chrome.runtime.sendMessage<
+          Message,
+          GetTabsResponse
+        >({
+          type: "GET_TABS",
         });
         if (response) {
           setTabs(response.tabs);
           setCurrentTabId(response.currentTabId);
         }
       } catch (error) {
-        console.error('Failed to fetch tabs:', error);
+        console.error("Failed to fetch tabs:", error);
       } finally {
         setIsLoading(false);
       }
@@ -60,15 +71,15 @@ const App: React.FC<AppProps> = ({ onClose }) => {
     async (tabId: number) => {
       try {
         await chrome.runtime.sendMessage<Message>({
-          type: 'SWITCH_TAB',
+          type: "SWITCH_TAB",
           payload: { tabId } as SwitchTabPayload,
         });
         onClose();
       } catch (error) {
-        console.error('Failed to switch tab:', error);
+        console.error("Failed to switch tab:", error);
       }
     },
-    [onClose]
+    [onClose],
   );
 
   const handleEnter = useCallback(() => {
@@ -84,20 +95,20 @@ const App: React.FC<AppProps> = ({ onClose }) => {
 
     try {
       const inputType = detectInputType(query);
-      if (inputType === 'url') {
+      if (inputType === "url") {
         await chrome.runtime.sendMessage<Message>({
-          type: 'OPEN_URL',
+          type: "OPEN_URL",
           payload: { url: normalizeUrl(query) } as OpenUrlPayload,
         });
       } else {
         await chrome.runtime.sendMessage<Message>({
-          type: 'WEB_SEARCH',
+          type: "WEB_SEARCH",
           payload: { query } as WebSearchPayload,
         });
       }
       onClose();
     } catch (error) {
-      console.error('Failed to perform action:', error);
+      console.error("Failed to perform action:", error);
     }
   }, [searchQuery, onClose]);
 
@@ -117,14 +128,17 @@ const App: React.FC<AppProps> = ({ onClose }) => {
         onClose();
       }
     },
-    [onClose]
+    [onClose],
   );
 
   return (
     <div
       className="fixed inset-0 flex items-center justify-center"
       onClick={handleOverlayClick}
-      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}
+      style={{
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      }}
     >
       {/* Overlay */}
       <div className="absolute inset-0 bg-overlay" />
@@ -133,9 +147,17 @@ const App: React.FC<AppProps> = ({ onClose }) => {
       <div
         className="relative bg-bg-primary rounded-xl shadow-2xl flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
-        style={{ width: MODAL_WIDTH, minWidth: MODAL_MIN_WIDTH, maxHeight: MODAL_MAX_HEIGHT }}
+        style={{
+          width: MODAL_WIDTH,
+          minWidth: MODAL_MIN_WIDTH,
+          maxHeight: MODAL_MAX_HEIGHT,
+        }}
       >
-        <SearchInput ref={inputRef} value={searchQuery} onChange={setSearchQuery} />
+        <SearchInput
+          ref={inputRef}
+          value={searchQuery}
+          onChange={setSearchQuery}
+        />
 
         {isLoading ? (
           <div className="flex items-center justify-center py-16">

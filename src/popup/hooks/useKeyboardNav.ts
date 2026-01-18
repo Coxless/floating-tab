@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback, useEffect } from "react";
 
 interface UseKeyboardNavOptions {
   itemCount: number;
@@ -22,19 +22,21 @@ export function useKeyboardNav({
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       switch (e.key) {
-        case 'Escape':
+        case "Escape":
           e.preventDefault();
           onEscape();
           break;
-        case 'ArrowDown':
+        case "ArrowDown":
           e.preventDefault();
-          onSelectedIndexChange(selectedIndex < itemCount - 1 ? selectedIndex + 1 : selectedIndex);
+          onSelectedIndexChange(
+            selectedIndex < itemCount - 1 ? selectedIndex + 1 : selectedIndex,
+          );
           break;
-        case 'ArrowUp':
+        case "ArrowUp":
           e.preventDefault();
           onSelectedIndexChange(selectedIndex > 0 ? selectedIndex - 1 : 0);
           break;
-        case 'Enter':
+        case "Enter":
           e.preventDefault();
           if (itemCount > 0) {
             onEnter();
@@ -44,13 +46,20 @@ export function useKeyboardNav({
           break;
       }
     },
-    [itemCount, selectedIndex, onSelectedIndexChange, onEnter, onEnterEmpty, onEscape]
+    [
+      itemCount,
+      selectedIndex,
+      onSelectedIndexChange,
+      onEnter,
+      onEnterEmpty,
+      onEscape,
+    ],
   );
 
   useEffect(() => {
     if (!enabled) return;
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [enabled, handleKeyDown]);
 }

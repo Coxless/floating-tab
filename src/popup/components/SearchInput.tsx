@@ -1,5 +1,5 @@
-import { forwardRef } from 'react';
-import { SEARCH_INPUT_HEIGHT } from '../constants';
+import { forwardRef } from "react";
+import { SEARCH_INPUT_HEIGHT } from "../constants";
 
 interface SearchInputProps {
   value: string;
@@ -34,31 +34,41 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           placeholder="タブを検索... (タイトルまたはURL)"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          onKeyDown={(e) => {                                                                
-            //ナビゲーションキーはuseKeyboardNavに伝播させる                                
-            const navKeys = ['Enter', 'Escape', 'ArrowUp', 'ArrowDown'];                     
-            if (!navKeys.includes(e.key)) {                                                  
-              e.stopPropagation();                                                           
-            }                                                                                
-          }}   
+          onKeyDown={(e) => {
+            //ナビゲーションキーはuseKeyboardNavに伝播させる
+            const navKeys = ["Enter", "Escape", "ArrowUp", "ArrowDown"];
+            if (!navKeys.includes(e.key)) {
+              e.stopPropagation();
+            }
+          }}
           className="flex-1 outline-none text-[16px] text-text-primary placeholder:text-text-secondary bg-transparent"
         />
 
         {value && (
           <button
-            onClick={() => onChange('')}
+            onClick={() => onChange("")}
             className="p-1 hover:bg-bg-secondary rounded transition-colors duration-150"
           >
-            <svg className="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-4 h-4 text-text-muted"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         )}
       </div>
     );
-  }
+  },
 );
 
-SearchInput.displayName = 'SearchInput';
+SearchInput.displayName = "SearchInput";
 
 export default SearchInput;
