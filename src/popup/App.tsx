@@ -63,6 +63,7 @@ const App: React.FC<AppProps> = ({ onClose }) => {
   }, []);
 
   // Reset selection when search query changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Intentionally trigger on searchQuery change
   useEffect(() => {
     setSelectedIndex(0);
   }, [searchQuery]);
@@ -132,9 +133,12 @@ const App: React.FC<AppProps> = ({ onClose }) => {
   );
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: Modal backdrop click-to-close pattern
     <div
       className="fixed inset-0 flex items-center justify-center"
       onClick={handleOverlayClick}
+      onKeyDown={(e) => e.key === "Escape" && onClose()}
+      role="presentation"
       style={{
         fontFamily:
           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -147,6 +151,9 @@ const App: React.FC<AppProps> = ({ onClose }) => {
       <div
         className="relative bg-bg-primary rounded-xl shadow-2xl flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
         style={{
           width: MODAL_WIDTH,
           minWidth: MODAL_MIN_WIDTH,

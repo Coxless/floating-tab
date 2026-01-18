@@ -17,6 +17,7 @@ const FallbackIcon: React.FC = () => (
     fill="none"
     stroke="currentColor"
     viewBox="0 0 24 24"
+    aria-hidden="true"
   >
     <path
       strokeLinecap="round"
@@ -37,9 +38,10 @@ const TabItem: React.FC<TabItemProps> = ({
   const [faviconError, setFaviconError] = useState(false);
 
   return (
-    <div
+    <button
+      type="button"
       className={`
-        flex items-center gap-3 px-4 cursor-pointer transition-all duration-150
+        w-full text-left flex items-center gap-3 px-4 cursor-pointer transition-all duration-150
         ${
           isSelected
             ? "bg-primary-light border-l-[3px] border-l-primary"
@@ -78,7 +80,7 @@ const TabItem: React.FC<TabItemProps> = ({
           現在
         </div>
       )}
-    </div>
+    </button>
   );
 };
 

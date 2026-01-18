@@ -19,6 +19,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"
@@ -46,14 +47,17 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
         {value && (
           <button
+            type="button"
             onClick={() => onChange("")}
             className="p-1 hover:bg-bg-secondary rounded transition-colors duration-150"
+            aria-label="入力をクリア"
           >
             <svg
               className="w-4 h-4 text-text-muted"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
